@@ -1,37 +1,31 @@
-# TrackWise SLO Lab
+# TrackWise reliability contract (v2)
 
-Simple two-host reliability lab for a fictional shipment-tracking API.
+Service: GET /v1/track, shipment tracking lookup.
 
-## Architecture
+## SLA (the customer promise)
+99.5% monthly availability. A request fails if it gets a 5xx, times out,
+or cannot connect. 4xx (client mistakes) do not count.
+Excluded: approved tests, other paths, announced maintenance up to 4h/month.
 
-- **control01**: TrackWise Spring Boot app (`/v1/track`) on port 8080
-- **infra01**: Prometheus, Alertmanager, Blackbox, Grafana + this repository
+## SLO (our stricter internal target)
+Availability: 99.9% over a rolling 30 days.
+Latency: 95% of requests under 300 ms over a rolling 30 days.
 
-## Reliability Contract
+## How we measure
+Availability: a blackbox probe from infra01 requests /v1/track with a
+known-valid ID every 5s. Good = HTTP 2xx within 3s. Anything else is bad.
+Latency: the app's request histogram (needs real traffic).
+App-side error rate, traffic and `up` are diagnostics, not the SLI.
 
-**Customer journey**  
-`GET /v1/track` — returns status of a demonstration shipment.
+## Error budget
+0.1% of 30 days = 43.2 minutes of failed probes.
+NORMAL >50% | CAUTION 25-50% | FREEZE 0-25% | EXHAUSTED 0%
 
-**Customer SLA**  
-99.5% successful eligible requests per calendar month.  
-Success = not HTTP 5xx.  
-Excluded: 4xx, approved tests, non-`/v1/track` traffic, scheduled maintenance (max 4 h/month with notice).
-
-**Internal SLO**  
-99.9% successful eligible requests over a rolling 30-day window.  
-Secondary goal: p95 latency ≤ 300 ms.
-
-**Error budget**  
-0.1% (the room under 99.9%).
-
-**Budget policy**
-- \> 50% left → NORMAL
-- 25–50% left → CAUTION
-- 0–25% left → FREEZE
-- 0% left → EXHAUSTED
-
-**Lab limitation**  
-Single-instance service. Restarts, patches and experiments spend real budget. The lab makes that cost visible.
+## Lab limits
+- Planned lab shutdown is not counted (start/stop order below).
+- Restarts and experiments DO spend budget; that is the point.
+- The live window is shortened so burn is visible; 30-day behaviour is
+  checked with promtool on synthetic data.
 
 ## Current Status
 

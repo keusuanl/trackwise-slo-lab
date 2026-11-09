@@ -1,0 +1,6 @@
+modules:
+  http_trackwise:
+    prober: http
+    timeout: 3s
+    http:
+      method: GET
