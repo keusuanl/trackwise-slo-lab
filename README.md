@@ -28,7 +28,7 @@ This repo holds the contract, the monitoring behind it, and a planned
 incident that tests both. I built it to understand how SLIs, SLOs, error
 budgets and SLAs fit together in practice, using Linux, systemd, Prometheus
 and Grafana.
-![](/trackwise-slo-lab/docs/images/trackwise_slo-lab-dashboard.png)
+![](/docs/images/trackwise_slo-lab-dashboard.png)
 
 ## What's here
 
@@ -90,7 +90,7 @@ spends it ten times too fast.
 A negative value means the budget is overspent. The dashboard shows it that
 way and does not clamp it to zero.
 
-![Dashboard showing healthy state](/trackwise-slo-lab/docs/images/01-dashboard-healthy.png)
+![Dashboard showing healthy state](/docs/images/01-dashboard-healthy.png)
 
 *Healthy state. The stats answer: is it up, are we within the SLO, how much budget is left, how fast are we spending and observing*
 
@@ -128,7 +128,7 @@ The `up` metric dropped immediately because Prometheus creates that itself.
 I wanted a way to track the service even when the service wasn't running, so
 I moved the SLI to a blackbox probe.
 
-![Old availability panel still healthy while the probe panel shows DOWN](/trackwise-slo-lab/docs/images/f1-old-panel-healthy-while-down.png)
+![Old availability panel still healthy while the probe panel shows DOWN](/docs/images/f1-old-panel-healthy-while-down.png)
 *About 3 minutes after the stop: the old panel looks healthy while the probe says DOWN.*
 
 
@@ -156,9 +156,9 @@ enabled and I chose not to spend more time chasing it. To avoid being blind
 So, I added a `TrackWiseProbeMissing` alert to detect when probe
 data disappears or the probe scrape fails.
 
-![Demonstrating by stopping the Blackbox Exporter Service](/trackwise-slo-lab/docs/images/f3-systemd-stop-blackbox_exporter.png)
+![Demonstrating by stopping the Blackbox Exporter Service](/docs/images/f3-systemd-stop-blackbox_exporter.png)
 
-![TrackWiseProbeMissing Alert Fired after fix](/trackwise-slo-lab/docs/images/f3-alerts-probe-missing.png)
+![TrackWiseProbeMissing Alert Fired after fix](/docs/images/f3-alerts-probe-missing.png)
 
 *I added a TrackWiseProbeMissing alert to detect when probe data disappears or the probe scrape fails.*
 
@@ -186,10 +186,10 @@ run I wrote down what I expected. The baseline was clean: availability
 100.000%, probe UP, budget 100%, burn rate 0.0, no firing alerts, and about
 0.2 requests a second from the probe.
 
-![Running Script](/trackwise-slo-lab/docs/images/00_trackwise%20service_stop_trigger.png)
+![Running Script](/docs/images/00_trackwise%20service_stop_trigger.png)
 *TrackWise was intentionally stopped for 180 seconds (3 minutes) The outage was generated using a simple script that:*
 
-![Baseline dashboard](/trackwise-slo-lab/docs/images/e1-baseline.png)
+![Baseline dashboard](/docs/images/e1-baseline.png)
 *Healthy state before the stop.*
 
 | Event | Time (UTC) |
@@ -223,7 +223,7 @@ The app produced no 5xx errors. Its request rate just fell to zero, because
 a dead app has nothing to report. This is why the probe is the SLI and not
 the app's own metrics.
 
-![Dashboard during the outage](/trackwise-slo-lab/docs/images/e2-outage.png)
+![Dashboard during the outage](/docs/images/e2-outage.png)
 *About 40 seconds into the outage. Availability and burn rate are read a few
 seconds apart, so they differ by one probe.*
 
@@ -235,7 +235,7 @@ came sooner because pending started at once, and `for: 1m 20sec` before it fired
 It fires when the 5-minute and 1-minute burn rates are both above 14.4. It
 fired during a sustained outage, and I did not test a single bad probe.
 
-![Alert firing](/trackwise-slo-lab/docs/images/e3-alert-trackwise_burn.png)
+![Alert firing](/docs/images/e3-alert-trackwise_burn.png)
 *"Active Since" counts from the pending state, so this was captured shortly
 after the restart, at about 00:28:30.*
 
@@ -248,7 +248,7 @@ availability climbed back over about five minutes as the failed probes aged
 out of its window. The service was healthy again, but the dashboard still
 remembered the outage.
 
-![Service recovered, budget still negative](/trackwise-slo-lab/docs/images/e4-recovered.png)
+![Service recovered, budget still negative](/docs/images/e4-recovered.png)
 *Probe UP, availability 100%, burn rate 0, and the budget still deep red.*
 
 ### What it cost
@@ -284,7 +284,7 @@ Earlier in the project I discovered that when the blackbox exporter was unavaila
 
 To test this, I stopped the exporter and waited for the TrackWiseProbeMissing alert to evaluate.
 
-![Monitoring the monitor](/trackwise-slo-lab/docs/images/e6-exporter_outage_alert.png)
+![Monitoring the monitor](/docs/images/e6-exporter_outage_alert.png)
 *The alert fired after one minute, as configured by the rule:*
 
 
