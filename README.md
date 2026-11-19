@@ -294,6 +294,6 @@ Losing a service and losing the probe are different failures that need different
 Monitoring should monitor itself. Without `TrackWiseProbeMissing`, a failed exporter could hide a real outage by preventing burn-rate alerts from evaluating.
 
 
-### Whats Missing?
+### What's missing
 
-`No alertmanager`: alerts are viewed in the Prometheus UI and no notifications are sent to email or slack which i plan to do next.
+**Alertmanager.** Alerts fire in Prometheus and are visible in its UI, but nothing sends a notification. In this lab, someone has to be looking to see that an alert fired. Routing alerts to email or Slack is the next project.
