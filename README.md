@@ -39,6 +39,9 @@ and Grafana.
 - `scripts/exp1.sh`: scripts used to run the expirement outage, collect timestaps and start the service
 - `src/main`: java, springboot simple application
 
+## Architecture
+
+![Diagram](/docs/images/diagram-trackwise-slo-lab.png)
 
 ## The contract
 
